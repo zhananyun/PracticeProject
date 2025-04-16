@@ -1,3 +1,0 @@
-/home/zhanyun0314/zy/practice/PracticeProject/threadPool/build/CMakeFiles/thread_pool_app.dir
-/home/zhanyun0314/zy/practice/PracticeProject/threadPool/build/CMakeFiles/edit_cache.dir
-/home/zhanyun0314/zy/practice/PracticeProject/threadPool/build/CMakeFiles/rebuild_cache.dir

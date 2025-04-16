@@ -1,29 +1,36 @@
-#pragma once
-#include <mutex>
-#include <thread>
+#ifndef THREAD_POOL_H
+#define THREAD_POOL_H
+
 #include <vector>
-#include <string>
-#include <list>
+#include <queue>
+#include <thread>
+#include <mutex>
 #include <condition_variable>
+#include <functional>
 
-class Task{
+class ThreadPool {
 public:
-    virtual int run()=0;
-};
+    // 初始化线程池，指定线程数量
+    void init(size_t numThreads);
+    // 启动线程池
+    void start();
+    // 向线程池添加任务
+    void addTask(const std::function<void()>& task);
+    // 停止线程池
+    void stop();
 
-class ThreadPool{
-public:
-    void init(int threadNum);//初始化线程池
-    void start();//启动线程池
-    void addTask(Task* task);//添加任务
-    Task* getTask();//获取任务
-    void stop();//停止线程池
 private:
-    int thread_num_=0;//线程数量
-    std::mutex mtx_;//互斥锁
-    void run();//线程运行函数
-    std::vector<std::thread*> threads_;//线程池
-    std::list<Task*> tasks_;//任务队列
-    std::condition_variable cv;//条件变量
-    bool is_stop_=false;//是否停止
+    // 工作线程函数
+    void run();
+    // 从任务队列获取任务
+    std::function<void()> getTask();
+
+    std::vector<std::thread> workers;
+    std::queue<std::function<void()>> tasks;
+    std::mutex queueMutex;
+    std::condition_variable condition;
+    bool isStopping;
+    size_t numThreads;
 };
+
+#endif    

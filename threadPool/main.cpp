@@ -1,32 +1,25 @@
-#include "thread_pool.h"
 #include <iostream>
+#include <chrono>
 #include <thread>
+#include "thread_pool.h"
 
-class MyTask:public Task{
-public:
-    int run(){
-        std::cout<<"MyTask run begin..."<<std::endl;
-        std::cout<<"MyTask name_:"<<name_<<std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-        std::cout<<"MyTask run end..."<<std::endl;
-        return 0;
-    }
-    std::string name_="";
-};
-int main(){
+void exampleTask() {
+    std::cout << "Task "<<std::this_thread::get_id()<<" is running." << std::endl;
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::cout << "Task "<<std::this_thread::get_id()<<" is finished." << std::endl;
+}
+
+int main() {
     ThreadPool pool;
     pool.init(4);
     pool.start();
 
-    MyTask* task1=new MyTask();
-    task1->name_="任务a";
-    pool.addTask(task1);
-    MyTask* task2=new MyTask();
-    task2->name_="任务b";
-    pool.addTask(task2);
-    
-    // std::this_thread::sleep_for(std::chrono::seconds(3));
-    // pool.stop();
+    for (int i = 0; i < 8; ++i) {
+        pool.addTask(exampleTask);
+    }
+
+    std::this_thread::sleep_for(std::chrono::seconds(10));
+    pool.stop();
 
     return 0;
-}
+}    
